@@ -20,7 +20,7 @@ const act=z.discriminatedUnion("act",[
 export const StorySchema=z.object({
  version:z.literal("2.0").default("2.0"),title:z.string().default("KPE story"),
  project:z.object({width:z.number().int().min(240).max(1920).default(720),height:z.number().int().min(320).max(1920).default(1280),fps:z.number().int().min(12).max(30).default(24),duration:z.number().positive().max(180).optional()}).default({}),
- characters:z.array(z.object({id:z.string().min(1),rig:z.string().default("human_basic"),position:point.optional(),style:styleSchema,emotion:z.enum(["neutral","happy","sad","surprised","angry"]).default("neutral")})).min(1),
+ characters:z.array(z.object({id:z.string().min(1),rig:z.enum(["human_basic"]).default("human_basic"),position:point.optional(),style:styleSchema,emotion:z.enum(["neutral","happy","sad","surprised","angry"]).default("neutral")})).min(1),
  props:z.array(z.object({id:z.string().min(1),type:z.enum(["book","ball","cup","box","chair"]).default("book"),position:z.object({x:z.number().finite(),y:z.number().finite()}),color:color.optional()})).default([]),
  scenes:z.array(z.object({id:z.string().min(1),duration:z.number().positive(),background:z.enum(["library","park","room","plain"]).default("library"),actions:z.array(act).default([]),transition:z.enum(["none","fade","slide"]).default("none")})).min(1)
 });
