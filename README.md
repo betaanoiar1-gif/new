@@ -69,7 +69,7 @@ KIOSAPI_SECRET and OPENAI_API_KEY are accepted as fallback key names. The model 
 
     node src/cli.js --benchmark
 
-The benchmark renders the same story with both transports and validates the MP4 files. It reports elapsed time, input screenshot bytes, output size, process RSS at report time, and video metadata. RSS at report time is not a precise peak-memory measurement. Use Colab psutil/cgroup metrics or /usr/bin/time -v for peak memory.
+The benchmark renders the same story with both transports and validates the MP4 files. It reports elapsed time, input screenshot bytes, output size, sampled peak Node-process RSS, and video metadata. This does not include the separate Chrome and FFmpeg processes; use Colab psutil/cgroup metrics or /usr/bin/time -v to measure total peak memory.
 
 Choose one transport manually with --format png or --format jpeg and optional --quality 85.
 
