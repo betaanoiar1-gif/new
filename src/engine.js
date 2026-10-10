@@ -64,12 +64,71 @@ function continuityFrom(state){return {elapsed:state.globalTime,characters:Objec
 export function evaluateStory(s,time){let off=0,continuity=null;const target=Math.max(0,Number.isFinite(time)?time:0);for(let i=0;i<s.scenes.length;i++){const end=off+s.scenes[i].duration;if(target<=end||i===s.scenes.length-1)return evaluateScene(s,i,target-off,continuity);const completed=evaluateScene(s,i,s.scenes[i].duration,continuity);continuity=continuityFrom(completed);off=end;}return evaluateScene(s,s.scenes.length-1,s.scenes.at(-1).duration,continuity);}
 const esc=x=>String(x).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;"),n=x=>Number.isFinite(x)?Number(x.toFixed(2)):0;
 const line=(x1,y1,x2,y2,c,w)=>'<line x1="'+n(x1)+'" y1="'+n(y1)+'" x2="'+n(x2)+'" y2="'+n(y2)+'" stroke="'+c+'" stroke-width="'+w+'" stroke-linecap="round"/>';
-function bg(name,w,h){const base=name==="park"?"#ccebd1":name==="room"?"#e8dfd4":name==="plain"?"#f4f0e8":"#eee4d2";let o='<rect width="'+w+'" height="'+h+'" fill="'+base+'"/>';if(name==="library"){for(let r=0;r<3;r++){const y=h*.16+r*h*.13;o+='<rect x="35" y="'+y+'" width="'+(w-70)+'" height="'+(h*.085)+'" rx="7" fill="#8a5c3d"/>';const cs=["#b94c45","#4c7192","#d6aa52","#587c65","#8b6a9b","#d17d43"];for(let i=0;i<13;i++){const bw=24+(i*11%15),x=48+i*(w-100)/13;o+='<rect x="'+n(x)+'" y="'+n(y-bw*.03)+'" width="'+bw+'" height="'+(h*.067)+'" rx="3" fill="'+cs[(i+r*2)%cs.length]+'"/>';}}}else if(name==="park"){o+='<circle cx="'+w*.82+'" cy="'+h*.14+'" r="55" fill="#f6d778"/>';for(let i=0;i<5;i++)o+='<circle cx="'+(80+i*145)+'" cy="'+(h*.43+(i%2)*25)+'" r="'+(55+(i%3)*8)+'" fill="#6eaa72"/>';o+='<rect y="'+h*.72+'" width="'+w+'" height="'+h*.28+'" fill="#83b978"/>';}else if(name==="room")o+='<rect x="70" y="150" width="220" height="260" fill="#8bb9d6" stroke="#fff" stroke-width="14"/><path d="M180 150V410 M70 280H290" stroke="#fff" stroke-width="9"/>';return o+'<rect y="'+h*.83+'" width="'+w+'" height="'+h*.17+'" fill="'+(name==="park"?"#5e9659":"#c6a27e")+'"/><path d="M0 '+h*.83+'H'+w+'" stroke="#98734f" stroke-width="5"/>';}
+export function renderBackground(name,w,h){
+ const floorY=Math.round(h*.83),park=name==="park",room=name==="room",plain=name==="plain";
+ const wall=park?"#cce8d2":room?"#eee3d5":plain?"#f5f0e6":"#efe5d4";
+ const floor=park?"#72a967":room?"#b98c68":plain?"#e9dfce":"#c9a780";
+ let o='<defs>'+
+ '<linearGradient id="kpe-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+(park?"#dff2e1":room?"#f7eee2":plain?"#fbf8f0":"#f8efdf")+'"/><stop offset="1" stop-color="'+wall+'"/></linearGradient>'+
+ '<linearGradient id="kpe-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+floor+'"/><stop offset="1" stop-color="'+(park?"#579152":room?"#946849":plain?"#d8c9b5":"#a77b56")+'"/></linearGradient>'+
+ '<linearGradient id="kpe-window" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c7e7f3"/><stop offset="1" stop-color="#77a9c8"/></linearGradient>'+
+ '</defs><rect width="'+w+'" height="'+h+'" fill="url(#kpe-wall)"/>';
+ if(name==="library"){
+  // Tall arched window and soft sunbeams make the room read as a real place.
+  o+='<path d="M'+(w*.68)+' '+(h*.08)+' Q'+(w*.82)+' '+(h*.015)+' '+(w*.94)+' '+(h*.08)+' V'+(h*.37)+' H'+(w*.68)+'Z" fill="#8d674c" stroke="#684a39" stroke-width="8"/>';
+  o+='<path d="M'+(w*.7)+' '+(h*.09)+' Q'+(w*.82)+' '+(h*.04)+' '+(w*.92)+' '+(h*.09)+' V'+(h*.34)+' H'+(w*.7)+'Z" fill="url(#kpe-window)"/>';
+  o+='<path d="M'+(w*.81)+' '+(h*.07)+' V'+(h*.34)+' M'+(w*.7)+' '+(h*.22)+' H'+(w*.92)+'" stroke="#f8f0dc" stroke-width="7"/>';
+  o+='<path d="M'+(w*.71)+' '+(h*.1)+' L'+(w*.9)+' '+(h*.34)+' H'+(w*.8)+'Z" fill="#fff5c6" opacity=".18"/>';
+  for(let r=0;r<3;r++){
+   const y=h*(.19+r*.135),sx=30+r*7,sw=w-60-r*14;
+   o+='<rect x="'+(sx-5)+'" y="'+(y+4)+'" width="'+(sw+10)+'" height="'+(h*.094)+'" rx="5" fill="#6b4633" opacity=".16"/>';
+   o+='<rect x="'+sx+'" y="'+y+'" width="'+sw+'" height="'+(h*.088)+'" rx="5" fill="#9a6947" stroke="#65452f" stroke-width="3"/>';
+   o+='<path d="M'+sx+' '+(y+7)+' H'+(sx+sw)+'" stroke="#c99564" stroke-width="3"/>';
+   const palette=["#b94c45","#4c7192","#d6aa52","#587c65","#8b6a9b","#d17d43","#d5b69a"];
+   let x=sx+12;while(x<sx+sw-18){const bw=19+((Math.floor(x)+r*7)%15),bh=h*(.058+((Math.floor(x/3)+r)%3)*.006);
+    o+='<path d="M'+x+' '+(y-1)+' Q'+(x+bw/2)+' '+(y-7)+' '+(x+bw)+' '+(y-1)+' V'+(y+bh)+' H'+x+'Z" fill="'+palette[(Math.floor(x/13)+r*2)%palette.length]+'" stroke="#553c30" stroke-width="1.4"/>';
+    o+='<path d="M'+(x+5)+' '+(y+5)+' V'+(y+bh-5)+'" stroke="#fff" stroke-width="2" opacity=".22"/>';x+=bw+5;
+   }
+  }
+  o+='<path d="M20 '+(h*.63)+' Q'+(w*.18)+' '+(h*.57)+' '+(w*.36)+' '+(h*.63)+'" fill="none" stroke="#d7b98e" stroke-width="5" opacity=".55"/>';
+ }else if(park){
+  o+='<circle cx="'+(w*.82)+'" cy="'+(h*.13)+'" r="'+(w*.075)+'" fill="#f5d779"/><circle cx="'+(w*.82)+'" cy="'+(h*.13)+'" r="'+(w*.095)+'" fill="#f5d779" opacity=".18"/>';
+  for(let i=0;i<4;i++){const cx=w*(.12+i*.27),cy=h*(.36+(i%2)*.055),r=w*(.09+(i%3)*.012);
+   o+='<path d="M'+(cx-12)+' '+(cy+r*.55)+' L'+(cx-8)+' '+(floorY+12)+' H'+(cx+10)+' L'+(cx+12)+' '+(cy+r*.55)+'Z" fill="#76523a"/>';
+   o+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+(i%2?"#77b778":"#65a86d")+'"/><circle cx="'+(cx-r*.4)+'" cy="'+(cy-r*.25)+'" r="'+(r*.56)+'" fill="#91c987" opacity=".6"/>';
+  }
+  o+='<path d="M0 '+(h*.68)+' Q'+(w*.2)+' '+(h*.62)+' '+(w*.38)+' '+(h*.7)+' T'+w+' '+(h*.67)+' V'+h+' H0Z" fill="#9ac77c"/>';
+  o+='<path d="M'+(w*.34)+' '+h+' Q'+(w*.47)+' '+(h*.79)+' '+(w*.54)+' '+floorY+' Q'+(w*.65)+' '+(h*.92)+' '+(w*.75)+' '+h+'Z" fill="#d9c69d" opacity=".85"/>';
+  // A small bench anchors the background without competing with the characters.
+  const bx=w*.68,by=h*.68;
+  o+='<path d="M'+(bx-42)+' '+(by+20)+' L'+(bx-48)+' '+(by+67)+' M'+(bx+42)+' '+(by+20)+' L'+(bx+48)+' '+(by+67)+'" stroke="#76513a" stroke-width="9"/>';
+  o+='<rect x="'+(bx-62)+'" y="'+by+'" width="124" height="16" rx="4" fill="#b77b45" stroke="#69462f" stroke-width="3"/><rect x="'+(bx-58)+'" y="'+(by-32)+'" width="116" height="12" rx="4" fill="#c58a50" stroke="#69462f" stroke-width="3"/>';
+  for(let i=0;i<12;i++){const fx=(i*67+23)%w,fy=h*(.7+(i%4)*.045);o+='<path d="M'+fx+' '+fy+' v-13" stroke="#47834d" stroke-width="2"/><circle cx="'+(fx-4)+'" cy="'+(fy-14)+'" r="4" fill="'+(i%2?"#e8a6b1":"#f3d47a")+'"/><circle cx="'+(fx+4)+'" cy="'+(fy-15)+'" r="4" fill="'+(i%2?"#f2c4ca":"#fff0b0")+'"/>';}
+ }else if(room){
+  // Framed window, wall art and a side cabinet establish room scale.
+  o+='<rect x="'+(w*.1)+'" y="'+(h*.13)+'" width="'+(w*.34)+'" height="'+(h*.25)+'" rx="4" fill="#fff7e8" stroke="#8b6a50" stroke-width="10"/>';
+  o+='<rect x="'+(w*.115)+'" y="'+(h*.145)+'" width="'+(w*.31)+'" height="'+(h*.22)+'" fill="url(#kpe-window)"/>';
+  o+='<path d="M'+(w*.27)+' '+(h*.145)+' V'+(h*.365)+' M'+(w*.115)+' '+(h*.255)+' H'+(w*.425)+'" stroke="#fff8e7" stroke-width="7"/>';
+  o+='<path d="M'+(w*.115)+' '+(h*.33)+' Q'+(w*.19)+' '+(h*.25)+' '+(w*.26)+' '+(h*.33) +' T'+(w*.425)+' '+(h*.31)+'" fill="#8ab78a" opacity=".7"/>';
+  o+='<rect x="'+(w*.67)+'" y="'+(h*.15)+'" width="'+(w*.19)+'" height="'+(h*.2)+'" rx="3" fill="#a97a54" stroke="#795237" stroke-width="7"/>';
+  o+='<rect x="'+(w*.69)+'" y="'+(h*.17)+'" width="'+(w*.15)+'" height="'+(h*.16)+'" fill="#e7bd70"/><path d="M'+(w*.715)+' '+(h*.29)+' l20 -42 l23 42Z" fill="#668b70"/><circle cx="'+(w*.77)+'" cy="'+(h*.205)+'" r="10" fill="#f7e6b6"/>';
+  const tx=w*.08,ty=h*.57;
+  o+='<rect x="'+tx+'" y="'+ty+'" width="'+(w*.2)+'" height="'+(h*.11)+'" rx="5" fill="#c08b58" stroke="#795237" stroke-width="3"/><rect x="'+(tx+8)+'" y="'+(ty+8)+'" width="'+(w*.2-16)+'" height="'+(h*.075)+'" fill="#e8c58d"/><path d="M'+(tx+12)+' '+(ty+h*.04)+' Q'+(tx+w*.1)+' '+(ty-h*.015)+' '+(tx+w*.18)+' '+(ty+h*.07)+'" fill="none" stroke="#fff4d7" stroke-width="3"/>';
+  o+='<rect x="'+(w*.76)+'" y="'+(h*.66)+'" width="'+(w*.17)+'" height="'+(h*.13)+'" rx="5" fill="#9b6c48"/><rect x="'+(w*.74)+'" y="'+(h*.64)+'" width="'+(w*.21)+'" height="12" rx="3" fill="#c08b58"/><path d="M'+(w*.78)+' '+(h*.79)+' v'+(h*.04)+' M'+(w*.91)+' '+(h*.79)+' v'+(h*.04)+'" stroke="#795237" stroke-width="8"/>';
+ }else{
+  for(let i=0;i<9;i++){const x=(i*97+31)%w,y=(i*173+81)%(floorY-30);o+='<circle cx="'+x+'" cy="'+y+'" r="'+(i%3+1)+'" fill="#b7a58e" opacity=".12"/>';}
+ }
+ o+='<rect y="'+floorY+'" width="'+w+'" height="'+(h-floorY)+'" fill="url(#kpe-floor)"/>';
+ o+='<path d="M0 '+floorY+' H'+w+'" stroke="'+(park?"#4f8d4c":"#8c694b")+'" stroke-width="6"/>';
+ if(!park){for(let i=1;i<7;i++){const y=floorY+(h-floorY)*i/7;o+='<path d="M0 '+y+' H'+w+'" stroke="#76583f" stroke-width="2" opacity=".2"/>';}for(let i=0;i<5;i++){const x=i*w/4;o+='<path d="M'+x+' '+floorY+' L'+(x+(i%2?35:-25))+' '+h+'" stroke="#76583f" stroke-width="2" opacity=".16"/>';}}
+ o+='<ellipse cx="'+(w*.5)+'" cy="'+(h*.91)+'" rx="'+(w*.4)+'" ry="'+(h*.035)+'" fill="#4e3b2b" opacity=".07"/>';
+ return o;
+}
 function face(c,x,y){const s=c.style;let o='<ellipse cx="'+x+'" cy="'+y+'" rx="35" ry="39" fill="'+s.skin+'" stroke="#5b4032" stroke-width="2"/><path d="M'+(x-34)+' '+(y-17)+' Q'+(x-25)+' '+(y-48)+' '+(x+12)+' '+(y-38)+' Q'+(x+34)+' '+(y-30)+' '+(x+34)+' '+(y-14)+' Q'+(x+9)+' '+(y-28)+' '+(x-3)+' '+(y-19)+' Q'+(x-20)+' '+(y-8)+' '+(x-34)+' '+(y-17)+'" fill="'+s.hair+'"/><ellipse cx="'+(x-12)+'" cy="'+(y-2)+'" rx="4" ry="5" fill="#2b2420"/><ellipse cx="'+(x+12)+'" cy="'+(y-2)+'" rx="4" ry="5" fill="#2b2420"/>';if(c.talkAmount>.12)o+='<ellipse cx="'+x+'" cy="'+(y+17)+'" rx="7" ry="'+(3+8*c.talkAmount)+'" fill="#7b3530"/>';else if(c.emotion==="happy")o+='<path d="M'+(x-12)+' '+(y+13)+' Q'+x+' '+(y+27)+' '+(x+13)+' '+(y+12)+'" fill="none" stroke="#7b3530" stroke-width="3"/>';else if(c.emotion==="sad")o+='<path d="M'+(x-12)+' '+(y+22)+' Q'+x+' '+(y+8)+' '+(x+13)+' '+(y+22)+'" fill="none" stroke="#7b3530" stroke-width="3"/>';else if(c.emotion==="surprised")o+='<ellipse cx="'+x+'" cy="'+(y+17)+'" rx="6" ry="8" fill="#7b3530"/>';else o+='<path d="M'+(x-10)+' '+(y+17)+'H'+(x+10)+'" stroke="#7b3530" stroke-width="3"/>';return o;}
 function drawChar(c){return renderCharacterIllustration(c);}
 function drawProp(p){return renderPropIcon(p);}
 
-export function renderSvg(st){let content='<text x="36" y="55" font-size="26" font-family="Arial,sans-serif" font-weight="700" fill="#4a3829">'+esc(st.scene.id)+'</text>';for(const p of st.props)if(!p.attachedTo)content+=drawProp(p);for(const c of st.characters)content+=drawChar(c);for(const p of st.props)if(p.attachedTo)content+=drawProp(p);if(st.scene.transition==="slide"&&st.transitionProgress>0)content='<g transform="translate('+n(-st.width*st.transitionProgress)+' 0)">'+content+'</g>';const cam=st.camera??{x:0,y:0,zoom:1};content='<g transform="translate('+n(st.width/2+cam.x)+' '+n(st.height/2+cam.y)+') scale('+n(cam.zoom)+') translate('+n(-st.width/2)+' '+n(-st.height/2)+')">'+content+'</g>';let b=bg(st.scene.background,st.width,st.height)+content;if(st.scene.transition==="fade"&&st.transitionAlpha<1)b+='<rect width="'+st.width+'" height="'+st.height+'" fill="#111827" opacity="'+n(1-st.transitionAlpha)+'"/>';return '<svg xmlns="http://www.w3.org/2000/svg" width="'+st.width+'" height="'+st.height+'" viewBox="0 0 '+st.width+' '+st.height+'">'+b+'</svg>';}
+export function renderSvg(st){let content='<text x="36" y="55" font-size="26" font-family="Arial,sans-serif" font-weight="700" fill="#4a3829">'+esc(st.scene.id)+'</text>';for(const p of st.props)if(!p.attachedTo)content+=drawProp(p);for(const c of st.characters)content+=drawChar(c);for(const p of st.props)if(p.attachedTo)content+=drawProp(p);if(st.scene.transition==="slide"&&st.transitionProgress>0)content='<g transform="translate('+n(-st.width*st.transitionProgress)+' 0)">'+content+'</g>';const cam=st.camera??{x:0,y:0,zoom:1};content='<g transform="translate('+n(st.width/2+cam.x)+' '+n(st.height/2+cam.y)+') scale('+n(cam.zoom)+') translate('+n(-st.width/2)+' '+n(-st.height/2)+')">'+content+'</g>';let b=renderBackground(st.scene.background,st.width,st.height)+content;if(st.scene.transition==="fade"&&st.transitionAlpha<1)b+='<rect width="'+st.width+'" height="'+st.height+'" fill="#111827" opacity="'+n(1-st.transitionAlpha)+'"/>';return '<svg xmlns="http://www.w3.org/2000/svg" width="'+st.width+'" height="'+st.height+'" viewBox="0 0 '+st.width+' '+st.height+'">'+b+'</svg>';}
 export function findChrome(){const paths=[process.env.CHROME_PATH,"/opt/chrome-linux64/chrome","/usr/bin/google-chrome","/usr/bin/google-chrome-stable","/usr/bin/chromium","/usr/bin/chromium-browser","/usr/bin/chrome"].filter(Boolean);for(const p of paths){try{fs.accessSync(p,fs.constants.X_OK);return p;}catch{}}for(const c of ["google-chrome","chromium","chromium-browser","chrome"]){const r=spawnSync("which",[c],{encoding:"utf8"});if(r.status===0&&r.stdout.trim())return r.stdout.trim();}throw new Error("Chrome/Chromium not found. Install Chrome for Testing or set CHROME_PATH.");}
 export function checkFFmpeg(){const r=spawnSync("ffmpeg",["-version"],{encoding:"utf8"});if(r.status!==0)throw new Error("FFmpeg is not installed or not on PATH");return r.stdout.split("\n")[0].trim();}
 async function encode({output,fps,format,count,frame}){fs.mkdirSync(path.dirname(path.resolve(output)),{recursive:true});const args=["-hide_banner","-loglevel","error","-y","-f","image2pipe","-vcodec",format==="jpeg"?"mjpeg":"png","-framerate",String(fps),"-i","pipe:0","-an","-c:v","libx264","-preset","ultrafast","-crf","23","-pix_fmt","yuv420p","-r",String(fps),"-movflags","+faststart",output],p=spawn("ffmpeg",args,{stdio:["pipe","ignore","pipe"]});let err="";p.stderr.setEncoding("utf8");p.stderr.on("data",d=>err+=d);const closed=once(p,"close");let bytes=0;try{for(let i=0;i<count;i++){const b=await frame(i);bytes+=b.length;if(!p.stdin.write(b))await once(p.stdin,"drain");}p.stdin.end();}catch(e){p.stdin.destroy();p.kill("SIGTERM");throw e;}const [code,signal]=await closed;if(code!==0)throw new Error("FFmpeg exit "+code+" ("+signal+"): "+err.trim());if(!fs.existsSync(output)||!fs.statSync(output).size)throw new Error("MP4 missing or empty");return {frames:count,inputBytes:bytes,outputBytes:fs.statSync(output).size};}

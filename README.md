@@ -15,6 +15,7 @@ This is an MVP, not professional animation quality. Browser rendering and perfor
 - Reusable illustrated SVG character artwork with facial expressions, clothing details, and gesture-aware arms.
 - Reusable illustrated SVG prop assets for books, balls, cups, boxes, and chairs.
 - Deterministic per-scene camera framing with push-in, pull-out, and pan motion (CPU-only).
+- Layered illustrated environments for library, park, and room scenes, plus a paper-like plain backdrop.
 - Deterministic absolute-time evaluation.
 - Character positions and prop ownership/attachments carry across scene boundaries.
 - Semantic actions: walkTo, wave, pick, give, sitOn, react, talk, idle.
@@ -88,7 +89,7 @@ Optional prompt -> KiosAPI -> story JSON -> Zod validation -> deterministic eval
 - IK is unit-tested, but elbow continuity and collisions need visual validation.
 - talk has a basic mouth animation and idle has subtle body motion; these are placeholders, not lip-sync or high-quality acting.
 - sitOn is schema-validated and changes placement, but a convincing seated pose is not implemented yet.
-- Backgrounds are procedural SVG; there is no AI image generation.
+- Library, park, and room environments use layered illustrated SVG backgrounds with windows, shelves, floor perspective, plants, and depth cues; there is no AI image generation.
 - Audio/TTS, subtitles, visual editor, and long-form planning are out of scope.
 - Performance must be measured in the actual runtime.
 
