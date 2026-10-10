@@ -17,3 +17,5 @@ test("sitOn rejects non-chair props",()=>{const s=demo();s.scenes[0].actions.pus
 test("duplicate IDs are rejected",()=>{const s=demo();s.characters.push({...s.characters[0]});assert.throws(()=>validateStory(s),/Duplicate character id/);});
 
 test("character and held prop continuity survives scene boundary",()=>{const s=demo();s.scenes.push({id:"after-handoff",duration:2,background:"library",actions:[],transition:"none"});s.project.duration=10;const next=evaluateStory(validateStory(s),9);assert.ok(Math.abs(next.characters.find(c=>c.id==="A").x-340)<.01);assert.equal(next.props[0].attachedTo.characterId,"B");});
+
+test("held book stays at the holder hand target",()=>{const s=validateStory(demo()),state=evaluateStory(s,6.5),b=state.characters.find(c=>c.id==="B"),book=state.props[0];assert.ok(Math.abs(b.armTarget.x-book.x)<.001);assert.ok(Math.abs(b.armTarget.y-book.y)<.001);assert.ok(Math.hypot(b.ik.end.x-book.x,b.ik.end.y-book.y)<.01);});
