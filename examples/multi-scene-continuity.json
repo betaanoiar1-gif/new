@@ -1,0 +1,110 @@
+{
+  "version": "2.0",
+  "title": "A Book Shared Between Friends",
+  "project": {
+    "width": 720,
+    "height": 1280,
+    "fps": 24,
+    "duration": 8
+  },
+  "characters": [
+    {
+      "id": "A",
+      "rig": "human_basic",
+      "position": [
+        160,
+        920
+      ],
+      "style": {
+        "skin": "#f2c6a0",
+        "shirt": "#3678d4",
+        "pants": "#263858",
+        "hair": "#342820"
+      },
+      "emotion": "neutral"
+    },
+    {
+      "id": "B",
+      "rig": "human_basic",
+      "position": [
+        520,
+        920
+      ],
+      "style": {
+        "skin": "#d9a078",
+        "shirt": "#23936b",
+        "pants": "#4a3a65",
+        "hair": "#1f2937"
+      },
+      "emotion": "neutral"
+    }
+  ],
+  "props": [
+    {
+      "id": "book",
+      "type": "book",
+      "position": {
+        "x": 420,
+        "y": 900
+      },
+      "color": "#d94841"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "Scene 1 — Find the book",
+      "duration": 4,
+      "background": "library",
+      "transition": "fade",
+      "actions": [
+        {
+          "t": 0,
+          "duration": 2,
+          "char": "A",
+          "act": "walkTo",
+          "to": [
+            340,
+            920
+          ]
+        },
+        {
+          "t": 2,
+          "duration": 1,
+          "char": "A",
+          "act": "pick",
+          "target": "book"
+        }
+      ]
+    },
+    {
+      "id": "Scene 2 — Share the story",
+      "duration": 4,
+      "background": "library",
+      "transition": "fade",
+      "actions": [
+        {
+          "t": 0,
+          "duration": 2,
+          "char": "A",
+          "act": "give",
+          "target": "B",
+          "prop": "book"
+        },
+        {
+          "t": 2,
+          "duration": 1,
+          "char": "B",
+          "act": "react",
+          "emotion": "happy"
+        },
+        {
+          "t": 3,
+          "duration": 1,
+          "char": "B",
+          "act": "wave",
+          "hand": "right"
+        }
+      ]
+    }
+  ]
+}
