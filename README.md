@@ -12,6 +12,7 @@ This is an MVP, not professional animation quality. Browser rendering and perfor
 - Headless Chrome path detection and CHROME_PATH override.
 - CPU rendering with GPU disabled.
 - SVG characters with configurable skin, hair, shirt, and pants colors.
+- Reusable illustrated SVG character artwork with facial expressions, clothing details, and gesture-aware arms.
 - Reusable illustrated SVG prop assets for books, balls, cups, boxes, and chairs.
 - Deterministic per-scene camera framing with push-in, pull-out, and pan motion (CPU-only).
 - Deterministic absolute-time evaluation.
@@ -82,7 +83,7 @@ Optional prompt -> KiosAPI -> story JSON -> Zod validation -> deterministic eval
 
 ## Current limitations
 
-- Character artwork is still a stylized SVG prototype, not professional frame-by-frame art; the first icon pass improves prop assets and camera movement, not full character illustration.
+- Character and prop artwork are reusable stylized SVG illustrations, not professional hand-drawn frame-by-frame animation or AI-generated painted assets.
 - The single- and multi-scene book handoff examples are the primary demos; general physical planning and collision avoidance are not implemented.
 - IK is unit-tested, but elbow continuity and collisions need visual validation.
 - talk has a basic mouth animation and idle has subtle body motion; these are placeholders, not lip-sync or high-quality acting.
