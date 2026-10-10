@@ -1,0 +1,23 @@
+{
+  "name": "kinetic-puppet-engine",
+  "version": "2.0.0-phase0",
+  "description": "CPU-only engine: LLM-free deterministic rendering of puppet animations to MP4 (KPE v2).",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/unit/*.test.mjs",
+    "phase0": "node tests/phase0/run-all.mjs"
+  },
+  "dependencies": {
+    "@ffmpeg-installer/linux-x64": "^4.1.0",
+    "@sparticuz/chromium": "^153.0.0",
+    "ffprobe-static": "^3.1.0",
+    "gsap": "^3.15.0",
+    "puppeteer-core": "^25.13.0",
+    "zod": "^4.6.5"
+  }
+}

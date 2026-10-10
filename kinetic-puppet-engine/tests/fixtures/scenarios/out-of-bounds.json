@@ -1,0 +1,79 @@
+{
+  "version": "2.0",
+  "project": {
+    "width": 720,
+    "height": 1280,
+    "fps": 24,
+    "duration": 8
+  },
+  "characters": [
+    {
+      "id": "A",
+      "rig": "human_basic",
+      "style": {
+        "skin": "#f9c9a0",
+        "shirt": "#3b82f6"
+      }
+    },
+    {
+      "id": "B",
+      "rig": "human_basic",
+      "style": {
+        "skin": "#d9a078",
+        "shirt": "#16a34a"
+      }
+    }
+  ],
+  "props": [
+    {
+      "id": "book",
+      "type": "book",
+      "position": {
+        "x": -50,
+        "y": 900
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene1",
+      "duration": 8,
+      "background": "library",
+      "transition": "fade",
+      "actions": [
+        {
+          "t": 0,
+          "duration": 2,
+          "char": "A",
+          "act": "walkTo",
+          "to": [
+            900,
+            1500
+          ]
+        },
+        {
+          "t": 2,
+          "duration": 1,
+          "char": "A",
+          "act": "pick",
+          "target": "book"
+        },
+        {
+          "t": 3,
+          "duration": 2,
+          "char": "A",
+          "act": "give",
+          "target": "B",
+          "prop": "book"
+        },
+        {
+          "t": 5,
+          "duration": 1,
+          "char": "B",
+          "act": "react",
+          "emotion": "happy"
+        }
+      ]
+    }
+  ]
+}
