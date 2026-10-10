@@ -16,6 +16,7 @@ This is an MVP, not professional animation quality. Browser rendering and perfor
 - Character positions and prop ownership/attachments carry across scene boundaries.
 - Semantic actions: walkTo, wave, pick, give, sitOn, react, talk, idle.
 - Prop attachment and handoff between characters.
+- Scene transitions: none, fade, and a short outgoing slide.
 - Two-bone IK with unreachable-target clamping.
 - PNG/JPEG frame transport to FFmpeg stdin with backpressure handling.
 - ffprobe checks for codec, resolution, FPS, duration, and decoded frame count.
