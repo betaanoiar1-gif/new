@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import {validateStory,solveTwoBoneIK,evaluateStory} from "../src/engine.js";
+import {validateStory,solveTwoBoneIK,evaluateStory,renderSvg} from "../src/engine.js";
 const demo=()=>JSON.parse(fs.readFileSync(new URL("../examples/book-handoff.json",import.meta.url),"utf8"));
 test("example story validates and sums duration",()=>assert.equal(validateStory(demo()).project.duration,8));
 test("unknown character is rejected",()=>{const s=demo();s.scenes[0].actions[0].char="ghost";assert.throws(()=>validateStory(s),/Unknown character/);});
@@ -10,3 +10,8 @@ test("book transfers from A to B",()=>{const s=validateStory(demo());assert.equa
 test("IK reaches reachable target",()=>{const r=solveTwoBoneIK({x:0,y:0},{x:40,y:30},43,40);assert.ok(Math.hypot(r.end.x-40,r.end.y-30)<.01);});
 test("IK clamps unreachable target",()=>{const r=solveTwoBoneIK({x:0,y:0},{x:500,y:0},43,40);assert.equal(r.reachable,false);assert.ok(Number.isFinite(r.end.x)&&r.end.x<84);});
 test("IK rejects zero length",()=>assert.throws(()=>solveTwoBoneIK({x:0,y:0},{x:1,y:1},0,2),/positive/));
+
+test("talk action creates a changing mouth state",()=>{const s=demo();s.scenes[0].actions.push({t:0,duration:2,char:"A",act:"talk"});const a=evaluateStory(validateStory(s),.2).characters.find(c=>c.id==="A");const b=evaluateStory(validateStory(s),.8).characters.find(c=>c.id==="A");assert.ok(a.talkAmount>0);assert.ok(b.talkAmount>0);});
+test("SVG output is valid-shaped and escapes scene text",()=>{const s=validateStory(demo());const svg=renderSvg(evaluateStory(s,0));assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"/);assert.match(svg,/<\/svg>$/);assert.match(svg,/A Small Act of Kindness/);});
+test("sitOn rejects non-chair props",()=>{const s=demo();s.scenes[0].actions.push({t:6,duration:1,char:"A",act:"sitOn",target:"book"});assert.throws(()=>validateStory(s),/must be a chair/);});
+test("duplicate IDs are rejected",()=>{const s=demo();s.characters.push({...s.characters[0]});assert.throws(()=>validateStory(s),/Duplicate character id/);});
