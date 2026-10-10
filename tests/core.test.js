@@ -1,0 +1,12 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import {validateStory,solveTwoBoneIK,evaluateStory} from "../src/engine.js";
+const demo=()=>JSON.parse(fs.readFileSync(new URL("../examples/book-handoff.json",import.meta.url),"utf8"));
+test("example story validates and sums duration",()=>assert.equal(validateStory(demo()).project.duration,8));
+test("unknown character is rejected",()=>{const s=demo();s.scenes[0].actions[0].char="ghost";assert.throws(()=>validateStory(s),/Unknown character/);});
+test("absolute time seeking is deterministic",()=>{const s=validateStory(demo()),a=JSON.stringify(evaluateStory(s,3.6));evaluateStory(s,7.4);assert.equal(a,JSON.stringify(evaluateStory(s,3.6)));});
+test("book transfers from A to B",()=>{const s=validateStory(demo());assert.equal(evaluateStory(s,3.5).props[0].attachedTo.characterId,"A");assert.equal(evaluateStory(s,4.4).props[0].attachedTo.characterId,"B");});
+test("IK reaches reachable target",()=>{const r=solveTwoBoneIK({x:0,y:0},{x:40,y:30},43,40);assert.ok(Math.hypot(r.end.x-40,r.end.y-30)<.01);});
+test("IK clamps unreachable target",()=>{const r=solveTwoBoneIK({x:0,y:0},{x:500,y:0},43,40);assert.equal(r.reachable,false);assert.ok(Number.isFinite(r.end.x)&&r.end.x<84);});
+test("IK rejects zero length",()=>assert.throws(()=>solveTwoBoneIK({x:0,y:0},{x:1,y:1},0,2),/positive/));
