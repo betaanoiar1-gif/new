@@ -23,3 +23,5 @@ test("held book stays at the holder hand target",()=>{const s=validateStory(demo
 test("multi-scene example preserves handoff state",()=>{const s=validateStory(JSON.parse(fs.readFileSync(new URL("../examples/multi-scene-continuity.json",import.meta.url),"utf8")));const state=evaluateStory(s,6.5);assert.equal(state.sceneIndex,1);assert.equal(state.globalTime,6.5);assert.equal(state.props[0].attachedTo.characterId,"B");assert.equal(state.characters.find(c=>c.id==="B").emotion,"happy");assert.ok(Math.abs(state.characters.find(c=>c.id==="A").x-340)<.01);});
 
 test("unsupported rig types are rejected explicitly",()=>{const s=demo();s.characters[0].rig="quadruped";assert.throws(()=>validateStory(s),/Invalid enum value/);});
+
+test("sitOn applies the chair pose and position",()=>{const s=demo();s.props.push({id:"chair",type:"chair",position:{x:360,y:920}});s.scenes[0].actions.push({t:6,duration:1,char:"A",act:"sitOn",target:"chair"});const c=evaluateStory(validateStory(s),6.5).characters.find(c=>c.id==="A");assert.equal(c.sitting,true);assert.equal(c.x,315);assert.equal(c.y,948);});
