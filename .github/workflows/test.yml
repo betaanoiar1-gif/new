@@ -11,5 +11,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - uses: browser-actions/setup-chrome@v2
+        id: setup-chrome
+        with:
+          chrome-version: stable
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
       - run: npm install --no-audit --no-fund
       - run: npm test
+      - name: Render and validate MP4
+        env:
+          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+        run: |
+          node src/cli.js --story examples/book-handoff.json --output output/ci-smoke.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,avg_frame_rate -of default=noprint_wrappers=1 output/ci-smoke.mp4
