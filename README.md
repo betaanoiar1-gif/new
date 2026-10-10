@@ -44,6 +44,12 @@ The engine checks common paths including /opt/chrome-linux64/chrome and /usr/bin
 
 Output: output/kpe-demo.mp4
 
+Two-scene handoff example:
+
+    npm run demo:multi
+
+Output: output/kpe-multi-scene.mp4
+
 Or:
 
     node src/cli.js --story examples/book-handoff.json --output output/book-handoff.mp4
@@ -74,7 +80,7 @@ Optional prompt -> KiosAPI -> story JSON -> Zod validation -> deterministic eval
 ## Current limitations
 
 - Character artwork is a stylized SVG prototype, not professional frame-by-frame art.
-- The book handoff is the primary interaction demo; general physical planning and collision avoidance are not implemented.
+- The single- and multi-scene book handoff examples are the primary demos; general physical planning and collision avoidance are not implemented.
 - IK is unit-tested, but elbow continuity and collisions need visual validation.
 - talk has a basic mouth animation and idle has subtle body motion; these are placeholders, not lip-sync or high-quality acting.
 - sitOn is schema-validated and changes placement, but a convincing seated pose is not implemented yet.
