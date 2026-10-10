@@ -15,3 +15,5 @@ test("talk action creates a changing mouth state",()=>{const s=demo();s.scenes[0
 test("SVG output is valid-shaped and escapes scene text",()=>{const s=validateStory(demo());const svg=renderSvg(evaluateStory(s,0));assert.match(svg,/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"/);assert.match(svg,/<\/svg>$/);assert.match(svg,/A Small Act of Kindness/);});
 test("sitOn rejects non-chair props",()=>{const s=demo();s.scenes[0].actions.push({t:6,duration:1,char:"A",act:"sitOn",target:"book"});assert.throws(()=>validateStory(s),/must be a chair/);});
 test("duplicate IDs are rejected",()=>{const s=demo();s.characters.push({...s.characters[0]});assert.throws(()=>validateStory(s),/Duplicate character id/);});
+
+test("character and held prop continuity survives scene boundary",()=>{const s=demo();s.scenes.push({id:"after-handoff",duration:2,background:"library",actions:[],transition:"none"});s.project.duration=10;const next=evaluateStory(validateStory(s),9);assert.ok(Math.abs(next.characters.find(c=>c.id==="A").x-340)<.01);assert.equal(next.props[0].attachedTo.characterId,"B");});
