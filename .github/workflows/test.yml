@@ -26,3 +26,11 @@ jobs:
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,avg_frame_rate -of default=noprint_wrappers=1 output/ci-smoke.mp4
           node src/cli.js --story examples/multi-scene-continuity.json --output output/ci-multi-scene.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,avg_frame_rate -of default=noprint_wrappers=1 output/ci-multi-scene.mp4
+      - name: Upload smoke-test videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kpe-smoke-mp4
+          path: output/*.mp4
+          if-no-files-found: ignore
+          retention-days: 7
