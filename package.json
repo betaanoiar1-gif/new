@@ -11,7 +11,8 @@
     "start": "node src/cli.js",
     "test": "node --test",
     "demo": "node src/cli.js --story examples/book-handoff.json --output output/kpe-demo.mp4",
-    "bench": "node src/cli.js --benchmark"
+    "bench": "node src/cli.js --benchmark",
+    "demo:multi": "node src/cli.js --story examples/multi-scene-continuity.json --output output/kpe-multi-scene.mp4"
   },
   "dependencies": {
     "puppeteer-core": "^24.10.2",
