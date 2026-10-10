@@ -21,3 +21,5 @@ test("character and held prop continuity survives scene boundary",()=>{const s=d
 test("held book stays at the holder hand target",()=>{const s=validateStory(demo()),state=evaluateStory(s,6.5),b=state.characters.find(c=>c.id==="B"),book=state.props[0];assert.ok(Math.abs(b.armTarget.x-book.x)<.001);assert.ok(Math.abs(b.armTarget.y-book.y)<.001);assert.ok(Math.hypot(b.ik.end.x-book.x,b.ik.end.y-book.y)<.01);});
 
 test("multi-scene example preserves handoff state",()=>{const s=validateStory(JSON.parse(fs.readFileSync(new URL("../examples/multi-scene-continuity.json",import.meta.url),"utf8")));const state=evaluateStory(s,6.5);assert.equal(state.sceneIndex,1);assert.equal(state.props[0].attachedTo.characterId,"B");assert.ok(Math.abs(state.characters.find(c=>c.id==="A").x-340)<.01);});
+
+test("unsupported rig types are rejected explicitly",()=>{const s=demo();s.characters[0].rig="quadruped";assert.throws(()=>validateStory(s),/Invalid enum value/);});
