@@ -6,7 +6,7 @@ test("each environment renders layered illustrated background details", () => {
   const cases = {
     library: ["kpe-wall", "kpe-floor", "url", "#9a6947"],
     park: ["kpe-wall", "kpe-floor", "#f5d779", "#b77b45"],
-    room: ["kpe-wall", "kpe-floor", "#8bb9d6", "#c08b58"],
+    room: ["kpe-wall", "kpe-floor", "#77a9c8", "#c08b58"],
     plain: ["kpe-wall", "kpe-floor", "#f5f0e6"]
   };
   for (const [name, needles] of Object.entries(cases)) {
