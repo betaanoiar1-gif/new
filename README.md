@@ -13,6 +13,7 @@ This is an MVP, not professional animation quality. Browser rendering and perfor
 - CPU rendering with GPU disabled.
 - SVG characters with configurable skin, hair, shirt, and pants colors.
 - Deterministic absolute-time evaluation.
+- Character positions and prop ownership/attachments carry across scene boundaries.
 - Semantic actions: walkTo, wave, pick, give, sitOn, react, talk, idle.
 - Prop attachment and handoff between characters.
 - Two-bone IK with unreachable-target clamping.
@@ -75,7 +76,8 @@ Optional prompt -> KiosAPI -> story JSON -> Zod validation -> deterministic eval
 - Character artwork is a stylized SVG prototype, not professional frame-by-frame art.
 - The book handoff is the primary interaction demo; general physical planning and collision avoidance are not implemented.
 - IK is unit-tested, but elbow continuity and collisions need visual validation.
-- sitOn, talk, and idle are accepted by the schema but do not yet have fully expressive animation implementations.
+- talk has a basic mouth animation and idle has subtle body motion; these are placeholders, not lip-sync or high-quality acting.
+- sitOn is schema-validated and changes placement, but a convincing seated pose is not implemented yet.
 - Backgrounds are procedural SVG; there is no AI image generation.
 - Audio/TTS, subtitles, visual editor, and long-form planning are out of scope.
 - Performance must be measured in the actual runtime.
@@ -84,4 +86,4 @@ Optional prompt -> KiosAPI -> story JSON -> Zod validation -> deterministic eval
 
     npm test
 
-Tests cover schema validation, unknown-character rejection, deterministic seeking, prop transfer, and IK reachability. Full render requires Chrome and FFmpeg.
+Tests cover schema validation, duplicate IDs, deterministic seeking, prop transfer across scenes, basic speech state, SVG output, and IK reachability. GitHub Actions also runs a real MP4 smoke render with Chrome and FFmpeg.
