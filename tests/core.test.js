@@ -25,3 +25,5 @@ test("multi-scene example preserves handoff state",()=>{const s=validateStory(JS
 test("unsupported rig types are rejected explicitly",()=>{const s=demo();s.characters[0].rig="quadruped";assert.throws(()=>validateStory(s),/Invalid enum value/);});
 
 test("sitOn applies the chair pose and position",()=>{const s=demo();s.props.push({id:"chair",type:"chair",position:{x:360,y:920}});s.scenes[0].actions.push({t:6,duration:1,char:"A",act:"sitOn",target:"chair"});const c=evaluateStory(validateStory(s),6.5).characters.find(c=>c.id==="A");assert.equal(c.sitting,true);assert.equal(c.x,315);assert.equal(c.y,948);});
+
+test("left-hand wave is represented in the evaluated rig state",()=>{const s=demo();s.scenes[0].actions.push({t:6,duration:1,char:"A",act:"wave",hand:"left"});const c=evaluateStory(validateStory(s),6.5).characters.find(c=>c.id==="A");assert.equal(c.waveHand,"left");assert.ok(c.waveAmount>0);assert.ok(renderSvg(evaluateStory(validateStory(s),6.5)).includes("<svg"));});
