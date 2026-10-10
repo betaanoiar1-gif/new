@@ -9,9 +9,10 @@ const point = z.object({ x: num, y: num }).strict();
 const time = z.number().finite().min(0).max(600);
 
 const base = { t: time, duration: z.number().finite().min(0).max(600), char: id };
+const start = z.object({ x: z.number().finite().min(-2000).max(4000) }).strict();
 
 export const ACTIONS = ['walkTo', 'wave', 'pick', 'give', 'sitOn', 'react', 'talk', 'idle'];
-export const EMOTIONS = ['happy', 'sad', 'surprised', 'neutral', 'angry', 'calm'];
+export const EMOTIONS = ['happy', 'sad', 'surprised', 'neutral'];
 export const PORTABLE_PROPS = ['book', 'cup'];
 export const FURNITURE = ['chair', 'table'];
 
@@ -38,6 +39,7 @@ export const storySchema = z.object({
   characters: z.array(z.object({
     id,
     rig: z.literal('human_basic'),
+    start: start.optional(),
     style: z.object({
       skin: hex,
       shirt: hex,

@@ -40,6 +40,7 @@ export async function openScene(browser, templatePath, { width, height, required
 export async function renderToMp4({
   browser, ffmpeg, templatePath, output, width, height, fps, duration,
   format = 'png', quality = 90, requiredIds = [], crf = 18, preset = 'veryfast', onFrame,
+  frameFn = null, // optional: (t, i) => markup; frames are then injected via window.__setFrame
 }) {
   const page = await openScene(browser, templatePath, { width, height, requiredIds });
   const frameCount = Math.round(duration * fps);
@@ -56,7 +57,11 @@ export async function renderToMp4({
   try {
     for (let i = 0; i < frameCount; i += 1) {
       const t = i / fps;
-      await page.evaluate((tt) => (typeof window.__seek === 'function' ? window.__seek(tt) : undefined), t);
+      if (frameFn) {
+        await page.evaluate((m) => window.__setFrame(m, ''), frameFn(t, i));
+      } else {
+        await page.evaluate((tt) => (typeof window.__seek === 'function' ? window.__seek(tt) : undefined), t);
+      }
       const c0 = performance.now();
       const buf = await page.screenshot(shotOpts);
       const c1 = performance.now();

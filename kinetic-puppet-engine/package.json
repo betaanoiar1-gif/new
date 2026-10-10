@@ -10,7 +10,10 @@
   },
   "scripts": {
     "test": "node --test tests/unit/*.test.mjs",
-    "phase0": "node tests/phase0/run-all.mjs"
+    "phase0": "node tests/phase0/run-all.mjs",
+    "start": "node src/cli.js",
+    "test:phase1": "node --test tests/unit/ik.test.mjs && node tests/phase1/render-ik.mjs",
+    "test:phase2": "node tests/phase2/mvp-render.mjs"
   },
   "dependencies": {
     "@ffmpeg-installer/linux-x64": "^4.1.0",

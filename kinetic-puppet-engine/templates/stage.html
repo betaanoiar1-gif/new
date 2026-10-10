@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; padding: 0; width: 720px; height: 1280px; overflow: hidden; background: #f5efe4; }
+</style>
+</head>
+<body>
+<!-- Phase 1 rig stage. Data-agnostic: the renderer injects character markup via window.__setFrame(markup). -->
+<svg id="stage" data-kpe-id="stage" width="720" height="1280" viewBox="0 0 720 1280" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="1280" fill="#f5efe4"/>
+  <rect y="1232" width="720" height="48" fill="#c9b79c"/>
+  <g id="layer" data-kpe-id="layer"></g>
+  <g id="debug" data-kpe-id="debug" opacity="0.9"></g>
+</svg>
+<script>
+  window.__setFrame = function (markup, debugMarkup) {
+    document.getElementById('layer').innerHTML = markup;
+    document.getElementById('debug').innerHTML = debugMarkup || '';
+  };
+  window.__kpeReady = true;
+</script>
+</body>
+</html>

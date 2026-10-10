@@ -1,0 +1,30 @@
+{
+  "version": "2.0",
+  "title": "Book hand-off (MVP)",
+  "project": { "width": 720, "height": 1280, "fps": 24, "duration": 8 },
+  "characters": [
+    { "id": "A", "rig": "human_basic", "start": { "x": 840 },
+      "style": { "skin": "#f9c9a0", "shirt": "#3b82f6", "pants": "#1e293b", "hair": "#4a2c17" } },
+    { "id": "B", "rig": "human_basic", "start": { "x": 160 },
+      "style": { "skin": "#d9a078", "shirt": "#16a34a", "pants": "#3f3f46", "hair": "#111111" } }
+  ],
+  "props": [
+    { "id": "table", "type": "table", "position": { "x": 540, "y": 1000 } },
+    { "id": "book", "type": "book", "position": { "x": 500, "y": 980 } }
+  ],
+  "scenes": [
+    {
+      "id": "scene1",
+      "duration": 8,
+      "background": "library",
+      "transition": "fade",
+      "actions": [
+        { "t": 0.0, "duration": 1.8, "char": "A", "act": "walkTo", "to": [560, 930] },
+        { "t": 1.8, "duration": 1.0, "char": "A", "act": "pick", "target": "book" },
+        { "t": 2.8, "duration": 1.8, "char": "A", "act": "walkTo", "to": [300, 930] },
+        { "t": 4.6, "duration": 1.0, "char": "A", "act": "give", "target": "B", "prop": "book" },
+        { "t": 5.6, "duration": 2.4, "char": "B", "act": "react", "emotion": "happy" }
+      ]
+    }
+  ]
+}

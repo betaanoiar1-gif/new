@@ -3,6 +3,10 @@
 // only out-of-bounds walk targets are corrected (clamped) and reported as warnings.
 import { storySchema, PORTABLE_PROPS, FURNITURE } from '../schema/story.js';
 
+// Actions the motion engine can render today. Others are valid JSON but rejected until built.
+export const RENDER_ACTIONS = ['walkTo', 'pick', 'give', 'react', 'idle'];
+export const RENDER_TRANSITIONS = ['none', 'fade'];
+
 const EPS = 1e-9;
 const err = (errors, code, path, message) => errors.push({ code, path, message });
 
@@ -58,6 +62,7 @@ export function validateScenario(raw) {
     for (const { a, ai } of sortedByTime) {
       const p = `${base}.actions[${ai}]`;
       if (!charIds.has(a.char)) err(errors, 'UNKNOWN_CHARACTER', `${p}.char`, `unknown character "${a.char}"`);
+      if (!RENDER_ACTIONS.includes(a.act)) err(errors, 'ACTION_NOT_IMPLEMENTED', `${p}.act`, `"${a.act}" is valid JSON but not implemented in the motion engine yet`);
       if (a.t + a.duration > sc.duration + EPS) {
         err(errors, 'TIME_RANGE', p, `action ends at ${a.t + a.duration}s, after scene duration ${sc.duration}s`);
       }
@@ -100,6 +105,10 @@ export function validateScenario(raw) {
         }
         default: break;
       }
+    }
+
+    if (!RENDER_TRANSITIONS.includes(sc.transition)) {
+      err(errors, 'TRANSITION_NOT_IMPLEMENTED', `${base}.transition`, `transition "${sc.transition}" is not implemented`);
     }
 
     // One action at a time per character.

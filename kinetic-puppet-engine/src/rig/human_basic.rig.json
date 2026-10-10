@@ -1,0 +1,48 @@
+{
+  "id": "human_basic",
+  "version": 1,
+  "units": "px, character origin = hip joint, y grows downward, standing stature ~624 px",
+  "joints_rest": {
+    "hip_L": [-28, 0],
+    "hip_R": [28, 0],
+    "knee_L": [-28, 150],
+    "knee_R": [28, 150],
+    "foot_L": [-28, 300],
+    "foot_R": [28, 300],
+    "chest": [0, -170],
+    "neck": [0, -200],
+    "head": [0, -262],
+    "shoulder_L": [-44, -160],
+    "shoulder_R": [44, -160]
+  },
+  "upper_body_joints": ["chest", "neck", "head", "shoulder_L", "shoulder_R"],
+  "bones": {
+    "thigh_L": { "from": "hip_L", "to": "knee_L", "length": 150, "width": 44, "part": "pants" },
+    "shin_L": { "from": "knee_L", "to": "foot_L", "length": 150, "width": 38, "part": "pants" },
+    "thigh_R": { "from": "hip_R", "to": "knee_R", "length": 150, "width": 44, "part": "pants" },
+    "shin_R": { "from": "knee_R", "to": "foot_R", "length": 150, "width": 38, "part": "pants" },
+    "spine": { "from": "hip", "to": "chest", "length": 170, "width": 118, "part": "shirt" },
+    "neck_bone": { "from": "chest", "to": "neck", "length": 30, "width": 26, "part": "skin" }
+  },
+  "head": { "radius": 62, "part": "skin" },
+  "arms": {
+    "L": {
+      "root": "shoulder_L", "elbow": "elbow_L", "hand": "hand_L",
+      "upper": { "length": 135, "width": 30, "part": "shirt" },
+      "fore": { "length": 120, "width": 26, "part": "skin" },
+      "pole_dir": [-1, 0.6]
+    },
+    "R": {
+      "root": "shoulder_R", "elbow": "elbow_R", "hand": "hand_R",
+      "upper": { "length": 135, "width": 30, "part": "shirt" },
+      "fore": { "length": 120, "width": 26, "part": "skin" },
+      "pole_dir": [1, 0.6]
+    }
+  },
+  "anchors": {
+    "hand_L": "hand_L",
+    "hand_R": "hand_R",
+    "lap": { "joint": "hip", "offset": [0, -30] }
+  },
+  "limits": { "min_bone_length": 1e-6 }
+}
